@@ -1,0 +1,286 @@
+/*!
+
+=========================================================
+* Argon Dashboard React - v1.2.2
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
+
+// icon from antd
+import {
+  SearchOutlined,
+  PlusOutlined,
+  SaveOutlined,
+  // EditOutlined,
+  DeleteOutlined,
+  MoreOutlined,
+} from "@ant-design/icons";
+
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
+// reactstrap components
+import {
+  Badge,
+  Card,
+  CardHeader,
+  CardFooter,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
+  DropdownToggle,
+  Media,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Progress,
+  Table,
+  Container,
+  Button,
+  // Tooltip,
+  Row,
+  UncontrolledTooltip
+} from "reactstrap";
+// core components
+import Header from "components/Headers/Header.js";
+
+import axios from "axios";
+import React, { useMemo, useState, useEffect } from "react";
+
+import Tbl from "components/Table/Table.js";
+// import { DataGrid } from "@mui/x-data-grid";
+
+
+import { DataGrid } from '@mui/x-data-grid';
+
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+
+
+const rows = [
+  {
+   id: 1, lastName: 'Snow', firstName: 'Jon', age: 35
+  },
+  {
+   id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42
+  },
+  {
+    id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45
+  },
+  {
+    id: 4, lastName: 'Stark', firstName: 'Arya', age: 16
+  },
+  {
+    id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null
+  },
+  {
+    id: 6, lastName: 'Melisandre', firstName: null, age: 150
+  },
+  {
+   id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44
+  },
+  {
+   id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36
+  },
+  {
+   id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65
+  },
+];
+
+
+const Tables = () => {
+  // const columns = useMemo()
+  const [data, setData] = useState([])
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+    console.log("button is clicked")
+  };
+  
+
+  const columns = [
+    {
+      field: "action",
+      headerName: <MoreOutlined style={{ marginLeft: "8px" }} />,
+      width:20,
+      sortable: false,
+      filterable:false,
+      hideable:false,
+      // showcolumns:false,
+      renderCell: (params) => {
+        const onClick = (e) => {
+          e.stopPropagation(); // don't select this row after clicking
+          console.log(params.id);
+          setAnchorEl(e.currentTarget);
+          // const api: GridApi = params.api;
+          // const thisRow: Record<string, GridCellValue> = {};
+  
+          // api
+          //   .getAllColumns()
+          //   .filter((c) => c.field !== "__check__" && !!c)
+          //   .forEach(
+          //     (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
+          //   );
+  
+          // return alert(JSON.stringify(thisRow, null, 4));
+        };
+  
+        return (
+          <div>
+            <IconButton onClick={onClick}> {<MoreOutlined />} </IconButton> 
+        <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleClose}>Button 1</MenuItem>
+        <MenuItem onClick={handleClose}>Button 2</MenuItem>
+        <MenuItem onClick={handleClose}>Button 3</MenuItem>
+      </Menu>
+          </div>
+        )
+      }
+    },
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'firstName', headerName: 'First name', width: 130 },
+    { field: 'lastName', headerName: 'Last name', width: 130 },
+    {
+      field: 'age',
+      headerName: 'Age',
+      type: 'number',
+      width: 90,
+    },
+    {
+      field: 'fullName',
+      headerName: 'Full name',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      valueGetter: (params) =>
+        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+  ];
+
+  useEffect(() => {
+    (async () => {
+      const result = await axios.get("https://api.tvmaze.com/search/shows?q=snow")
+      setData(result.data)
+      // const result = await axios.post("http://10.53.26.249:3003/api/getToken",{
+      //   username: "FJR",
+      //   password: "FJR",
+      // },
+      // {
+      //   headers: {
+      //     "content-type": "application/x-www-form-urlencoded",
+      //     Connection: "keep-alive",
+      //     Accept: "*/*"
+      //   },
+      // })
+      // console.log(result.data);
+    })()
+  }, [])
+
+  return (
+    <>
+      <Header />
+      {/* Page content */}
+      <Container className="mt--7" fluid>
+        {/* Table */}
+        <Row>
+          <div className="col">
+            <Card className="shadow">
+              <CardHeader className="border-0">
+              <Row>
+              <IconButton > {<PlusOutlined />} </IconButton> 
+              <IconButton > {<SearchOutlined />} </IconButton> 
+              <IconButton > {<DeleteOutlined />} </IconButton> 
+              <IconButton > {<MoreOutlined />} </IconButton> 
+              </Row>
+                {/* <h3 className="mb-0">Data Table using Material UI Data Grid</h3> */}
+              </CardHeader>
+              {/* <Tbl columns={column1} data={data} /> */}
+              <div style={{ height: 500, width: "100%" }}>
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  checkboxSelection
+                />
+              </div>
+              {/* <CardFooter className="py-4">
+                <nav aria-label="...">
+                  <Pagination
+                    className="pagination justify-content-end mb-0"
+                    listClassName="justify-content-end mb-0"
+                  >
+                    <PaginationItem className="disabled">
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                        tabIndex="-1"
+                      >
+                        <i className="fas fa-angle-left" />
+                        <span className="sr-only">Previous</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem className="active">
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        2 <span className="sr-only">(current)</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        3
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <i className="fas fa-angle-right" />
+                        <span className="sr-only">Next</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                  </Pagination>
+                </nav>
+              </CardFooter> */}
+            </Card>
+          </div>
+        </Row>
+      </Container>
+    </>
+  );
+};
+
+export default Tables;
