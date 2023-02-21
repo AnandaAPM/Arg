@@ -17,6 +17,7 @@
 */
 
 // reactstrap components
+import React,{ useState } from "react";
 import {
   Button,
   Card,
@@ -31,57 +32,40 @@ import {
   Row,
   Col
 } from "reactstrap";
+import { login } from "../../network/API";
 
-const Login = () => {
+
+const Login = props => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("");
+
+  const tryLogin = async () => {
+    const response = await login(email, password).catch((e)=>{
+      setPassword("")
+      setError(e.response.data.message)
+      // console.log(e.response.data.message)
+    })
+    const { data } = response
+    if (response.status === 200) {
+      setError("")
+      localStorage.setItem("id_token", data.message.id_token)
+      localStorage.setItem("refresh_token", data.message.refresh_token)
+      props.history.push("/");
+
+    } 
+  }
   return (
     <>
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-3">
-              <small>Sign in with</small>
+          <CardHeader className="bg-transparent pb-0">
+            <div className="text-muted text-center mt-0 mb-3">
+              <large>SIGN IN</large>
             </div>
-            <div className="btn-wrapper text-center">
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/github.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Github</span>
-              </Button>
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/google.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Google</span>
-              </Button>
-            </div>
+
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
-              <small>Or sign in with credentials</small>
-            </div>
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
@@ -90,11 +74,8 @@ const Login = () => {
                       <i className="ni ni-email-83" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="new-email"
-                  />
+                  <Input placeholder="Email" type="email" autoComplete="email" value={email}
+                    onChange={e => setEmail(e.target.value)} />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -104,28 +85,32 @@ const Login = () => {
                       <i className="ni ni-lock-circle-open" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input
-                    placeholder="Password"
-                    type="password"
-                    autoComplete="new-password"
-                  />
+                  <Input placeholder="Password" type="password" autoComplete="password" value={password}
+                    onChange={e => setPassword(e.target.value)} />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
-                >
-                  <span className="text-muted">Remember me</span>
-                </label>
-              </div>
+              {/*<div className="custom-control custom-control-alternative custom-checkbox">*/}
+              {/*    <input*/}
+              {/*        className="custom-control-input"*/}
+              {/*        id=" customCheckLogin"*/}
+              {/*        type="checkbox"*/}
+              {/*    />*/}
+              {/*    <label*/}
+              {/*        className="custom-control-label"*/}
+              {/*        htmlFor=" customCheckLogin"*/}
+              {/*    >*/}
+              {/*        <span className="text-muted">Remember me</span>*/}
+              {/*    </label>*/}
+              {/*</div>*/}
+              {error ?
+                <div className="text-muted font-italic">
+                  <small>
+                    error:{" "}
+                    <span className="text-red font-weight-700">{error}</span>
+                  </small>
+                </div> : null}
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button className="my-4" color="primary" type="button" onClick={tryLogin}>
                   Sign in
                 </Button>
               </div>
