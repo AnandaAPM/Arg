@@ -61,7 +61,7 @@ const Login = props => {
         <Card className="bg-secondary shadow border-0">
           <CardHeader className="bg-transparent pb-0">
             <div className="text-muted text-center mt-0 mb-3">
-              <large>SIGN IN</large>
+              <h1>SIGN IN</h1>
             </div>
 
           </CardHeader>

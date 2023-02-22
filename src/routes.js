@@ -42,14 +42,14 @@ var routes = [
     layout: "/admin",
     api:false
   },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "ni ni-pin-3 text-orange",
-    component: Maps,
-    layout: "/admin",
-    api: true
-  },
+  // {
+  //   path: "/maps",
+  //   name: "Maps",
+  //   icon: "ni ni-pin-3 text-orange",
+  //   component: Maps,
+  //   layout: "/admin",
+  //   api: true
+  // },
   {
     path: "/user-profile",
     name: "User Profile",
